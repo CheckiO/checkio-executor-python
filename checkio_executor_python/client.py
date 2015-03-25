@@ -81,32 +81,34 @@ class RefereeClient(object):
             return self._recive_data(tries=tries)
 
 
-def start():
-    try:
-        robot_uid, robot_gid = pwd.getpwnam('robot')[2:4]
-    except KeyError:
-        pass  # for dev version
-    else:
+class ClientLoop(object):
+    cls_client = RefereeClient
+    cls_runner = Runner
+
+    def __init__(self, port, environment_id):
+        self.environment_id = environment_id
+        self.client = self.cls_client(port)
+        self.runner = self.cls_runner()
+
+    def set_os_permissions(self):
         try:
-            os.setgid(robot_gid)
-            os.setuid(robot_uid)
-        except OSError:
+            robot_uid, robot_gid = pwd.getpwnam('robot')[2:4]
+        except KeyError:
             pass  # for dev version
+        else:
+            try:
+                os.setgid(robot_gid)
+                os.setuid(robot_uid)
+            except OSError:
+                pass  # for dev version
 
-    connect_port = int(sys.argv[1])
-    environment_id = sys.argv[2]
-
-    client = RefereeClient(connect_port)
-    execution_data = client.request({
-        'status': 'connected',
-        'environment_id': environment_id,
-        'pid': os.getpid(),
-    })
-    runner = Runner()
-    while True:
-        results = runner.execute(execution_data)
-        execution_data = client.request(results)
-
-
-if __name__ == '__main__':
-    start()
+    def start(self):
+        self.set_os_permissions()
+        execution_data = self.client.request({
+            'status': 'connected',
+            'environment_id': self.environment_id,
+            'pid': os.getpid(),
+        })
+        while True:
+            results = self.runner.execute(execution_data)
+            execution_data = self.client.request(results)

@@ -74,7 +74,7 @@ class Runner(object):
         """
         return {
             '__builtins__': self.builtins,
-            '__name__=': 'MYCODE',
+            '__name__': 'MYCODE',
             '__import__': _import_secure
         }
 

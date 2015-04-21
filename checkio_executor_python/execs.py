@@ -92,6 +92,11 @@ class Runner(object):
                 'status': 'fail',
                 'description': str(e)
             }
+        finally:
+            self.post_execute()
+
+    def post_execute(self):
+        pass
 
     def _get_callback(self, execution_data):
         callback_name = execution_data.get('action')

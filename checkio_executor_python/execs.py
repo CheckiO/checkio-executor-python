@@ -87,11 +87,6 @@ class Runner(object):
                 'status': 'fail',
                 'description': str(e)
             }
-        except Exception as e:
-            return {
-                'status': 'fail',
-                'description': str(e)
-            }
 
     def _get_callback(self, execution_data):
         callback_name = execution_data.get('action')

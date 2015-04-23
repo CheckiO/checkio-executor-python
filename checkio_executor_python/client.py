@@ -30,8 +30,7 @@ class RefereeClient(object):
         data_json = self._to_json(data)
         self._write(data_json)
         if skipp_result is None:
-            result = self._get_response()
-            return json.loads(result)
+            return self._get_response_json()
 
     def _to_json(self, data):
         try:
@@ -57,6 +56,9 @@ class RefereeClient(object):
             if self.TERMINATOR in new_data:
                 recv = data_response.split(self.TERMINATOR)[0]
                 return recv
+
+    def _get_response_json(self):
+        return json.loads(self._get_response())
 
     def _write(self, data):
         data = data + self.TERMINATOR

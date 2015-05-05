@@ -11,7 +11,7 @@ except ImportError:
 
 from checkio_executor_python.permissions import CLOSE_BUILDINS
 from checkio_executor_python.permissions import ALLOWED_MODULES as _ALLOWED_MODULES
-from checkio_executor_python.utils import str_traceback, pformat_none, AttrDict
+from checkio_executor_python.utils import str_traceback, pformat_none
 
 RANDOM_SEED = uuid.uuid4().hex
 random.seed(RANDOM_SEED)
@@ -107,7 +107,7 @@ class Runner(object):
             exec (compile(statement, '<MYCODE>', 'exec'), self.globals)
         except Exception as e:
             sys.stderr.write(str_traceback(e, *sys.exc_info()))
-            raise
+            raise StopExecuting
 
     def _execute_expression(self, expression):
         """
@@ -120,7 +120,7 @@ class Runner(object):
                 exec (compile(expression, '<MYCODE>', 'exec'), self.globals)
             except Exception as e:
                 sys.stderr.write(str_traceback(e, *sys.exc_info()))
-                raise
+                raise StopExecuting
 
     def _config_env(self, data):
         # TODO: add description for config options
@@ -174,7 +174,7 @@ class Runner(object):
             }
         except Exception as e:
             sys.stderr.write(str_traceback(e, *sys.exc_info()))
-            raise
+            raise StopExecuting
 
     def action_run_code_and_function(self, data):
         self._config_env(data)
@@ -203,4 +203,8 @@ class RefereeException(Exception):
 
 
 class ActionFail(RefereeException):
+    pass
+
+
+class StopExecuting(RefereeException):
     pass

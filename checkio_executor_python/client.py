@@ -6,7 +6,7 @@ import socket
 import cgi
 import telnetlib
 
-from checkio_executor_python.execs import Runner
+from checkio_executor_python.execs import Runner, StopExecuting
 
 PY3 = sys.version_info[0] == 3
 
@@ -112,5 +112,9 @@ class ClientLoop(object):
             'pid': os.getpid(),
         })
         while True:
-            results = self.runner.execute(execution_data)
-            execution_data = self.client.request(results)
+            try:
+                results = self.runner.execute(execution_data)
+            except StopExecuting:
+                break
+            else:
+                execution_data = self.client.request(results)

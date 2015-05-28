@@ -1,14 +1,16 @@
 ALLOWED_MODULES = [
+    'abc',
     'array',
     'base64',
-    'binascii',
     'bisect',
+    'binascii',
     'calendar',
+    'cmath',
+    'codecs',
     'collections',
     'copy',
     'datetime',
     'decimal',
-    'exceptions',
     'fractions',
     'functools',
     'hashlib',
@@ -20,9 +22,11 @@ ALLOWED_MODULES = [
     'pprint',
     'random',
     're',
-    'struct',
+    'replib',
+    'statistics',
     'string',
-    'StringIO',
+    'stringprep',
+    'struct',
     'textwrap',
     'time',
     'types',
@@ -32,9 +36,7 @@ ALLOWED_MODULES = [
     '_strptime',
 ]
 
-
 CLOSE_BUILDINS = [
-    '__import__',
     'memoryview',
     'open',
     'buffer',

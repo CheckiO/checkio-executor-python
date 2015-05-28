@@ -21,7 +21,7 @@ def _import_secure(*args, **kwargs):
     if args[0] not in Runner.ALLOWED_MODULES:
         error_message = (
             "The module `{}` is not allowed on checkio. "
-            "Please see http://www.checkio.org/wiki/Modules/SupportedModulesForPython2/"
+            "Please see http://www.checkio.org/wiki/Modules/SupportedModulesForPython3/"
         ).format(args[0])
         raise ImportError(error_message)
     return __import__(*args, **kwargs)

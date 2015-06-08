@@ -122,6 +122,12 @@ class Runner(object):
                 sys.stderr.write(str_traceback(e, *sys.exc_info()))
                 raise StopExecuting
 
+    def _clear_code(self, statement):
+        if statement is None:
+            sys.stderr.write("Code is null")
+            raise StopExecuting
+        return re.sub('\s+$', '', statement).replace('\t', '    ')
+
     def _config_env(self, data):
         # TODO: add description for config options
         config = data.get('env_config')
@@ -155,9 +161,10 @@ class Runner(object):
 
     def action_run_code(self, data):
         self._config_env(data)
+        code = self._clear_code(data['code'])
         return {
             'status': 'success',
-            'result': self._execute_statement(data['code']),
+            'result': self._execute_statement(code),
         }
 
     def action_run_function(self, data):
@@ -178,11 +185,13 @@ class Runner(object):
 
     def action_run_code_and_function(self, data):
         self._config_env(data)
-        self._execute_statement(data['code'])
+        code = self._clear_code(data['code'])
+        self._execute_statement(code)
         return self.action_run_function(data)
 
     def action_run_in_console(self, data):
-        result = self._execute_expression(data['code'])
+        code = self._clear_code(data['code'])
+        result = self._execute_expression(code)
         return {
             'status': 'success',
             'result': pformat_none(result)

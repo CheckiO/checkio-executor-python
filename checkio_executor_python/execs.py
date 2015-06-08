@@ -74,7 +74,7 @@ class Runner(object):
         """
         return {
             '__builtins__': self.builtins,
-            '__name__': 'MYCODE',
+            '__name__': '__main__',
             '__import__': _import_secure
         }
 
@@ -150,8 +150,8 @@ class Runner(object):
         if 'random_seed' in config:
             random.seed(config['random_seed'])
 
-        if 'global_name' in config:
-            self.globals.update({'__name__': config['global_name']})
+        if 'is_checking' in config:
+            self.globals.update({'__name__': '__main_checking__'})
 
     def action_run_code(self, data):
         self._config_env(data)

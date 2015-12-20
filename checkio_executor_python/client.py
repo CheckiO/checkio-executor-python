@@ -94,7 +94,7 @@ class ClientLoop(object):
 
     def set_os_permissions(self):
         try:
-            robot_uid, robot_gid = pwd.getpwnam('robot')[2:4]
+            robot_uid, robot_gid = pwd.getpwnam('nobody')[2:4]
         except KeyError:
             pass  # for dev version
         else:

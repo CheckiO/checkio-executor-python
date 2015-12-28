@@ -99,8 +99,10 @@ class ClientLoop(object):
             pass  # for dev version
         else:
             try:
+                os.setgroups([])
                 os.setgid(robot_gid)
                 os.setuid(robot_uid)
+                os.umask(0o777)
             except OSError:
                 pass  # for dev version
 

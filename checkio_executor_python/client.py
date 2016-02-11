@@ -21,6 +21,7 @@ class RefereeClient(object):
         if connection_host is None:
             connection_host = self.DEFAULT_CONNECTION_HOST
         self._client = telnetlib.Telnet(connection_host, connect_port)
+        self._collected_data = ''
 
     @property
     def socket(self):
@@ -44,18 +45,21 @@ class RefereeClient(object):
             })
 
     def _get_response(self):
-        data_response = ''
         no_data_counter = 100
         while True:
+            if self.TERMINATOR in self._collected_data:
+                ter_index = self._collected_data.index(self.TERMINATOR)
+                ret = self._collected_data[0:ter_index]
+                self._collected_data = self._collected_data[ter_index+1:]
+                return ret
+
             new_data = self._recive_data()
             if not new_data:
                 no_data_counter -= 1
                 if not no_data_counter:
                     raise ValueError('No data')
-            data_response += new_data
-            if self.TERMINATOR in new_data:
-                recv = data_response.split(self.TERMINATOR)[0]
-                return recv
+
+            self._collected_data += new_data
 
     def _get_response_json(self):
         return json.loads(self._get_response())

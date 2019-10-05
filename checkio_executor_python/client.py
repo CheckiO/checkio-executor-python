@@ -1,7 +1,9 @@
 import os
 import pwd
 import sys
-import json
+import numpy as np
+import json 
+from collections.abc import Iterator, Sequence
 import socket
 import cgi
 import telnetlib
@@ -10,6 +12,15 @@ from checkio_executor_python.execs import Runner, StopExecuting
 
 PY3 = sys.version_info[0] == 3
 
+
+class CiOJSEncoderEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, Sequence) or isinstance(obj, Iterator):
+            return list(obj)
+
+        return json.JSONEncoder.default(self, obj)
 
 class RefereeClient(object):
 
@@ -35,7 +46,7 @@ class RefereeClient(object):
 
     def _to_json(self, data):
         try:
-            return json.dumps(data)
+            return json.dumps(data, cls=CiOJSEncoderEncoder)
         except TypeError:
             result = data.get('result')
             error = u'TypeError: {0} is wrong data type'.format(cgi.escape(str(type(result))))
